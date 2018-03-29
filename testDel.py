@@ -20,13 +20,15 @@ def getCoordinates(places,scale=1):
     coordinates=[]
     for place in places:
         result=requests.get("https://maps.googleapis.com/maps/api/geocode/json?address="+place+"&key=%20AIzaSyB1M2yE5eTC9Gd4Qtay8q_WjmqxojO7hcM")
-        coordinate=(json.loads(result.content)['results'][0]['geometry']['location']['lng']*scale,json.loads(result.content)['results'][0]['geometry']['location']['lat']*scale)
+        #print(result.content)
+        result = result.content.decode('utf-8')
+        coordinate=(json.loads(result)['results'][0]['geometry']['location']['lng']*scale,json.loads(result)['results'][0]['geometry']['location']['lat']*scale)
         coordinates.append(coordinate)
     return coordinates
 
 def getDistances(place1,place2):
     result = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1 + '&destinations='  + place2 + '&key=AIzaSyD6U597d1z2sGEUTiWD6w6VcpT_lg4ou24')
-    result = result.content
+    result = result.content.decode('utf-8')
     distance = (json.loads(result)['rows'][0]['elements'][0]['distance']['text'])
     distance = float(distance.split('km')[0])
     return distance
