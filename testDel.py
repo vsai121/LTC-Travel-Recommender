@@ -46,7 +46,9 @@ t = Delaunay(points)
 
 #t = points
 print(t.nsimplex)
+
 print(t.convex_hull)
+
 edges = []
 m = dict(enumerate(nodes)) # mapping from vertices to nodes
 for i in range(t.nsimplex):
@@ -62,13 +64,16 @@ for edge in edges:
     place2 = places[edge[1]]
     Map[i,j]=Map[j,i]=getDistances(place1,place2)
 
-pp = pprint.PrettyPrinter(indent=20)
-pp.pprint(Map)
 
+print(edges)
 # build graph
-G = nx.Graph(edges)
+G = nx.Graph()
+G.add_weighted_edges_from(edges)
+print(G.graph)
 pos = dict(zip(nodes,points))
 # draw
-import matplotlib.pyplot as plt
-nx.draw(G,pos)
-plt.show()
+#import matplotlib.pyplot as plt
+#nx.draw(G,pos)
+for i in (nx.shortest_path(G,source=places.index("Udupi"),target=places.index("Bangalore"))):
+    print(i,places[i])
+#plt.show()

@@ -19,31 +19,26 @@ class mapLoader:
         with open('places.txt', 'r') as f:
             reader = f.readlines()
             for place in reader:
-                place = place.split()[0]
+                print(place)
                 self.places.append(place)
 
     def loadCoordinates(self):
         scale = self.scale
-        for place in self.places:
-            result = requests.get(
-                "https://maps.googleapis.com/maps/api/geocode/json?address=" + place + "&key=%20AIzaSyB1M2yE5eTC9Gd4Qtay8q_WjmqxojO7hcM")
+        with open('coordinates.txt') as results:  
+            for result in (results.readlines()):
+                try:
+                    coordinate = (json.loads(result)['results'][0]['geometry']['location']['lng'] * scale,json.loads(result)['results'][0]['geometry']['location']['lat'] * scale)
+                except:
+                    coordinate=(-1,-1)
+                print(coordinate)
+                self.coordinates.append(coordinate)
 
-            result = result.content.decode('utf-8')
-            coordinate = (json.loads(result)['results'][0]['geometry']['location']['lng'] * scale,
-                          json.loads(result)['results'][0]['geometry']['location']['lat'] * scale)
-            print(place + " " + str(coordinate))
-            self.coordinates.append(coordinate)
-
-    def loadDistances(self):
-        pass
-
-    def getDistances(self,place1, place2):
-        result = requests.get(
-            'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1 + '&destinations=' + place2 + '&key=AIzaSyD6U597d1z2sGEUTiWD6w6VcpT_lg4ou24')
-        result = result.content.decode('utf-8')
-        distance = (json.loads(result)['rows'][0]['elements'][0]['distance']['text'])
-        distance = float(distance.split('km')[0])
-        return distance
+    def loadDistances(self,place1, place2):
+        distanceMatrix=[]
+        with open('distances.txt') as results:  
+            for result in (results.readlines()):
+                distanceMatrix.append([float(i) for i in result.split()])
+        return distanceMatrix[self.places.index(place1)][self.places.index(place2)]
 
     def loadGraph(self):
         t = Delaunay(self.coordinates)
@@ -62,18 +57,18 @@ class mapLoader:
             j = edge[1]
             place1 = self.places[edge[0]]
             place2 = self.places[edge[1]]
-            map[i, j] = self.getDistances(place1, place2)
+            map[i, j] = self.loadDistances(place1, place2)
             map[j, i] = map[i, j]
             print(map[i,j])
-            self.Graph.add_edge(i,j, weight=map[i,j])
-        #self.Graph = nx.Graph(edges)
+            if(map[i,j]>0 and map[i,j]<1000):
+                self.Graph.add_edge(i,j, weight=map[i,j])
 
 loader = mapLoader(100)
 loader.loadPlaces()
 loader.loadCoordinates()
 loader.loadGraph()
 pos = dict(enumerate(loader.coordinates))
-nx.draw(loader.Graph, pos)
+nx.draw(loader.Graph, pos, with_labels=True)
 labels = nx.get_edge_attributes(loader.Graph,'weight')
 print(labels)
 nx.draw_networkx_edge_labels(loader.Graph,pos,edge_labels=labels)
