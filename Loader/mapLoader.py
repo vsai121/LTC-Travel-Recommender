@@ -22,7 +22,7 @@ class mapLoader:
         with open('Loader/places.txt', 'r') as f:
             reader = f.readlines()
             for place in reader:
-                print(place)
+                #print(place)
                 self.places.append(place)
 
     def loadCoordinates(self):
@@ -33,7 +33,7 @@ class mapLoader:
                     coordinate = (json.loads(result)['results'][0]['geometry']['location']['lng'] * scale,json.loads(result)['results'][0]['geometry']['location']['lat'] * scale)
                 except:
                     coordinate=(-1,-1)
-                print(coordinate)
+                #print(coordinate)
                 self.coordinates.append(coordinate)
 
     def loadDistances(self,place1, place2):
@@ -62,7 +62,7 @@ class mapLoader:
             place2 = self.places[edge[1]]
             map[i, j] = self.loadDistances(place1, place2)
             map[j, i] = map[i, j]
-            print(map[i,j])
+            #print(map[i,j])
             if(map[i,j]>0 and map[i,j]<1000):
                 self.Graph.add_edge(i,j, weight=map[i,j])
 

@@ -1,5 +1,6 @@
 from Pathfinder.greedypick import greedyorder
 from Loader.mapLoader import mapLoader
+from Pathfinder.ZoneAngle import validPlaces
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -10,7 +11,7 @@ loader.loadGraph()
 pos = dict(enumerate(loader.coordinates))
 nx.draw(loader.Graph, pos, with_labels=True)
 labels = nx.get_edge_attributes(loader.Graph,'weight')
-print(labels)
+#print(labels)
 nx.draw_networkx_edge_labels(loader.Graph,pos,edge_labels=labels)
 plt.show()
 
@@ -20,10 +21,25 @@ start = 10
 
 
 
-tovisit = ["Bangalore","Mumbai","Ahmedabad","Mangalore"]
-print(loader.places)
+tovisit = ["Bangalore","Mumbai","Ahmedabad","Mangalore", "Hyderabad"]
+#print(loader.places)
 for i in range(len(tovisit)):
     tovisit[i] = loader.places.index(tovisit[i]+"\n")
-final = greedyorder(10,tovisit,loader)
-for i in final:
-    print(loader.places[i])
+allValid = []
+allPaths = []
+for i in tovisit:
+    valid = validPlaces(start, i,tovisit,loader)
+    if valid not in allValid:
+        allValid.append(valid)
+        path = greedyorder(start, valid, loader)
+        allPaths.append(path)
+
+for i in allPaths:
+    for j in i:
+        print(loader.places[j].rstrip("\n"))
+    print("*"*50)
+
+
+#final = greedyorder(10,valid,loader)
+#for i in final:
+#   print(loader.places[i])
