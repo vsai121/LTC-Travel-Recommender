@@ -21,18 +21,15 @@ def greedyorder(s, destinations, l):
     left2visit = list(tuple(destinations))
     path = []
     tovisit = list(tuple(left2visit))
-    print(tovisit,cmpdist)
     try:
         tovisit = sorted(tovisit, key=cmpdist)
     except TypeError:
-        print("Caught")
-
+        print("caught")
     current = start
     for i in range(len(tovisit)):
         spaths = [math.inf] * len(left2visit)
         for j in range(len(left2visit)):
             spaths[j] = nx.shortest_path_length(loader.Graph, source=current, target=left2visit[j], weight='weight')
-        print(spaths)
         minind = spaths.index(min(spaths))
         path.append(left2visit[minind])
         current = left2visit[minind]

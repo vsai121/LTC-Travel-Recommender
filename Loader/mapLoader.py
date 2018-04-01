@@ -3,7 +3,6 @@ import numpy as np
 import requests
 import json
 import matplotlib.pyplot as plt
-
 from scipy.spatial import Delaunay
 import math
 from Pathfinder.greedypick import greedyorder
@@ -22,7 +21,6 @@ class mapLoader:
         with open('Loader/places.txt', 'r') as f:
             reader = f.readlines()
             for place in reader:
-                #print(place)
                 self.places.append(place)
 
     def loadCoordinates(self):
@@ -33,7 +31,6 @@ class mapLoader:
                     coordinate = (json.loads(result)['results'][0]['geometry']['location']['lng'] * scale,json.loads(result)['results'][0]['geometry']['location']['lat'] * scale)
                 except:
                     coordinate=(-1,-1)
-                #print(coordinate)
                 self.coordinates.append(coordinate)
 
     def loadDistances(self,place1, place2):
@@ -47,9 +44,19 @@ class mapLoader:
         t = Delaunay(self.coordinates)
         nodes = list(range(len(self.coordinates)))
         map = np.zeros((len(self.coordinates), len(self.coordinates)))
-        edges = []
         m = dict(enumerate(nodes))  # mapping from vertices to nodes
         self.Graph = nx.Graph()
+        for i in nodes:
+            if self.coordinates[i][0]>0:
+                self.Graph.add_node(i)
+
+
+    def loadEdges(self): 
+        t = Delaunay(self.coordinates)
+        nodes = list(range(len(self.coordinates)))
+        map = np.zeros((len(self.coordinates), len(self.coordinates)))
+        edges = []
+        m = dict(enumerate(nodes))  # mapping from vertices to nodes
         for i in range(t.nsimplex):
             edges.append((m[t.vertices[i, 0]], m[t.vertices[i, 1]]))
             edges.append((m[t.vertices[i, 1]], m[t.vertices[i, 2]]))
@@ -62,7 +69,6 @@ class mapLoader:
             place2 = self.places[edge[1]]
             map[i, j] = self.loadDistances(place1, place2)
             map[j, i] = map[i, j]
-            #print(map[i,j])
             if(map[i,j]>0 and map[i,j]<1000):
                 self.Graph.add_edge(i,j, weight=map[i,j])
 
