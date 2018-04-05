@@ -22,8 +22,8 @@ def makeMap(path):
 	loader.loadCoordinates()
 	loader.loadGraph()
 	for i in range(0,len(path)-1):
-		place1 = path[i]
-		place2 = path[i+1]
+		place1 = loader.places[path[i]]
+		place2 = loader.places[path[i+1]]
 		w=loadDistances(place1, place2)
 		if(w>0 and w<1000):
 			loader.Graph.add_edge(places.index(place1),places.index(place2), weight=w)

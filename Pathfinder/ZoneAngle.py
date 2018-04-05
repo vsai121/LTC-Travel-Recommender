@@ -20,5 +20,6 @@ def validPlaces(source, final, destinations, loader):
                 A = 360-A
             if A >= angle-theta and A <= angle+theta:
                 valid.append(destinations[i])
+
     valid.append(final)
     return tuple(sorted(valid))

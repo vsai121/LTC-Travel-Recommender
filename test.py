@@ -32,17 +32,22 @@ for i in tovisit:
         allValid.append(valid)
         path = greedyorder(start, valid, loader)
         allPaths.append(path)
-print(allValid)
+
+print("allpaths",allPaths)
 for i in allPaths:
 	s=start
 	finalPath=[]
 	for j in i:
-		for i in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
-			if loader.places[i] not in finalPath:
-				finalPath.append(loader.places[i])
+		for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
+			if k not in finalPath:
+
+				finalPath.append(k)
+		#print("final path",finalPath)
+		
 		s=j
 	print("Final path is:",finalPath)
-	recommend(finalPath)
+	validPlaces(start,i[-1],finalPath,loader)
+	#recommend(finalPath)
 	makeMap(finalPath)	
 	print("*"*50)
 
