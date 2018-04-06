@@ -6,6 +6,17 @@ import networkx as nx
 from createMap import makeMap
 from recommender import recommend
 
+def powerset(s):
+	power=[]
+	x = len(s)
+	for i in range(1 << x):
+		t=[s[j] for j in range(x) if (i & (1 << j))]
+		if len(t)>0:
+			power.append(t)
+
+	return power
+
+
 loader = mapLoader(100)
 loader.loadPlaces()
 loader.loadCoordinates()
@@ -17,13 +28,7 @@ labels = nx.get_edge_attributes(loader.Graph,'weight')
 nx.draw_networkx_edge_labels(loader.Graph,pos,edge_labels=labels)
 plt.show()
 
-
-def powerset(iterable):
-    s = list(iterable)
-    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
-
 start = input("Enter source:")
-print(start)
 start=loader.places.index(start+'\n')
 tovisit = input("Enter your desired destinations:").split()
 
@@ -32,32 +37,44 @@ for i in range(len(tovisit)):
 allValid = []
 allPaths = []
 
-for i in tovisit:
-	valid = validPlaces(start, i,tovisit,loader)
-	if valid not in allValid:
-		allValid.append(valid)
-		path = greedyorder(start, valid, loader)
-		allPaths.append(path)
+"""
+recommendedVisits = [start]
+
+for x in tovisit:
+	recommendedVisits.append(x)
+
+recommendedVisits = recommend(recommendedVisits)
+
+"""
+for k in powerset(tovisit):
+	for i in k:
+		valid = validPlaces(start, i,k,loader)
+		if valid not in allValid:
+			allValid.append(valid)
+			path = greedyorder(start, valid, loader)
+			allPaths.append(path)
 
 print("allpaths",allPaths)
-
-for i in powerset(allPaths):
+lastRoutes=[]
+for i in allPaths:
 	s=start
 	finalPath=[]
-	for j in i:
+	for j in i: 
 		for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
 			if k not in finalPath:
 				finalPath.append(k)
 
-
-		#print("final path",finalPath)
-
 		s=j
-	print("Final path is:",finalPath)
-	legal = validate(start,finalPath , loader)
-	if legal:
-		makeMap(finalPath)
+	if finalPath not in lastRoutes:
+		lastRoutes.append(finalPath)
 
+for lastRoute in lastRoutes:
+	currentRoute=(lastRoute)
+	legal = validate(start,currentRoute , loader)
+	print("Final path is:",currentRoute," includes destinations:",[loader.places[x] for x in currentRoute if x in tovisit])
 
-	#recommend(finalPath)
+	for i in range(len(tovisit)):
+		if tovisit[i] in currentRoute:
+			if legal:
+				makeMap(currentRoute)
 	print("*"*50)
