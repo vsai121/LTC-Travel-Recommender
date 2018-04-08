@@ -5,7 +5,7 @@ import networkx as nx
 from scipy.spatial import distance
 
 theta = 30
-maxDeviation = 130
+maxDeviation = 150
 
 def getAngle(place1,place2,loader):
     dx = loader.coordinates[place2][0] - loader.coordinates[place1][0]
@@ -23,7 +23,7 @@ def validPlaces(source, final, destinations, loader):
         angle1 = 360+angle1
 
     if angle2<0:
-        angle2 = 360+angle2    
+        angle2 = 360+angle2
 
     for i in range(len(destinations)):
         if destinations[i] != final:
@@ -32,11 +32,11 @@ def validPlaces(source, final, destinations, loader):
             if A<0:
                 A+=360
             if C<0:
-                C+=360  
-            
+                C+=360
+
             if A >= angle1-theta and A <= angle1+theta  and C >= angle2-theta and C <= angle2+theta:
                 valid.append(destinations[i])
-                
+
 
     valid.append(final)
     return tuple(sorted(valid))
@@ -83,4 +83,4 @@ def validate(source,path,loader):
             if pathDeviation<maxDeviation:
                 legal=0
                 break
-    return legal   
+    return legal

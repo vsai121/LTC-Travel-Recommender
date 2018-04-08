@@ -45,11 +45,11 @@ def validate(source,path , loader):
         else:
             limit=180-B+previousAngle
 
-        if limit <120:
+        if limit <150:
             illegal=1
             break
 
     if illegal:
         return 0
 
-    return 1    
+    return 1

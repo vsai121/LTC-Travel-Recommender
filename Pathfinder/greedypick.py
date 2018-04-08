@@ -41,8 +41,8 @@ def greedyorder(s, destinations, l):
         spaths = [math.inf] * len(left2visit)
         #eucledianDist = [math.inf] * len(left2visit)
         for j in range(1,len(left2visit)):
-            spaths[j] = nx.shortest_path_length(loader.Graph, source=current, target=left2visit[j], weight='weight')
-            #spaths[j] = findEuclideanDistance(i ,  j , l)
+            #spaths[j] = nx.shortest_path_length(loader.Graph, source=current, target=left2visit[j], weight='weight')
+            spaths[j] = findEuclideanDistance(current ,  left2visit[j] , l)
             print("Place1" , loader.places[i] , "Place2" , loader.places[j] , "Distance" , spaths[j])
         minind = spaths.index(min(spaths))
         path.append(left2visit[minind])

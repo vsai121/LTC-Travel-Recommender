@@ -51,27 +51,29 @@ for i in tovisit:
 	valid = validPlaces(start, i,tovisit,loader)
 	print("i" , i , "Valid" , valid);
 
-	if valid not in allValid and validate(start,valid,loader):
+	if valid not in allValid:
 		allValid.append(valid)
 		path = greedyorder(start, valid, loader)
 
 		allPaths.append(path)
 
-print("allpaths",powerset(allPaths))
+print("allpaths", allPaths)
 lastRoutes=[]
-for x in powerset(allPaths):
-	
-	for i in x:
+
+for x in allPaths:
+	for i in powerset(x):
 		finalPath=[]
 		s=start
-		for j in i: 
-			for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
-				if k not in finalPath:
-					finalPath.append(k)
+		print("powerset")
+		if validate(start,i,loader):
+			for j in i:
+				for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
+					if k not in finalPath:
+						finalPath.append(k)
 
-			s=j
-		if finalPath not in lastRoutes:
-			lastRoutes.append(finalPath)
+				s=j
+			if finalPath not in lastRoutes:
+				lastRoutes.append(finalPath)
 
 for lastRoute in lastRoutes:
 	currentRoute=(lastRoute)
