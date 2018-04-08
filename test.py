@@ -46,35 +46,39 @@ for x in tovisit:
 recommendedVisits = recommend(recommendedVisits)
 
 """
-for k in powerset(tovisit):
-	for i in k:
-		valid = validPlaces(start, i,k,loader)
-		if valid not in allValid:
-			allValid.append(valid)
-			path = greedyorder(start, valid, loader)
-			allPaths.append(path)
 
-print("allpaths",allPaths)
+for i in tovisit:
+	valid = validPlaces(start, i,tovisit,loader)
+	print("i" , i , "Valid" , valid);
+
+	if valid not in allValid and validate(start,valid,loader):
+		allValid.append(valid)
+		path = greedyorder(start, valid, loader)
+
+		allPaths.append(path)
+
+print("allpaths",powerset(allPaths))
 lastRoutes=[]
-for i in allPaths:
-	s=start
-	finalPath=[]
-	for j in i: 
-		for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
-			if k not in finalPath:
-				finalPath.append(k)
+for x in powerset(allPaths):
+	
+	for i in x:
+		finalPath=[]
+		s=start
+		for j in i: 
+			for k in nx.shortest_path(loader.Graph,source=s, target=j, weight='weight'):
+				if k not in finalPath:
+					finalPath.append(k)
 
-		s=j
-	if finalPath not in lastRoutes:
-		lastRoutes.append(finalPath)
+			s=j
+		if finalPath not in lastRoutes:
+			lastRoutes.append(finalPath)
 
 for lastRoute in lastRoutes:
 	currentRoute=(lastRoute)
-	legal = validate(start,currentRoute , loader)
+	#legal = validate(start,currentRoute , loader)
 	print("Final path is:",currentRoute," includes destinations:",[loader.places[x] for x in currentRoute if x in tovisit])
 
 	for i in range(len(tovisit)):
 		if tovisit[i] in currentRoute:
-			if legal:
-				makeMap(currentRoute)
+			makeMap(currentRoute)
 	print("*"*50)

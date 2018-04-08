@@ -5,7 +5,7 @@ import networkx as nx
 from scipy.spatial import distance
 
 theta = 30
-maxDeviation = 120
+maxDeviation = 130
 
 def getAngle(place1,place2,loader):
     dx = loader.coordinates[place2][0] - loader.coordinates[place1][0]
@@ -14,6 +14,7 @@ def getAngle(place1,place2,loader):
     return angle
 
 def validPlaces(source, final, destinations, loader):
+
     angle1 = getAngle(source,final,loader)
     angle2 = getAngle(final , source , loader)
     valid = []
@@ -34,7 +35,6 @@ def validPlaces(source, final, destinations, loader):
                 C+=360  
             
             if A >= angle1-theta and A <= angle1+theta  and C >= angle2-theta and C <= angle2+theta:
-                print("source" , source , "Final" , loader.places[final] , "place" , loader.places[destinations[i]], "C" ,C , "A" , A)
                 valid.append(destinations[i])
                 
 
@@ -51,22 +51,26 @@ def findEuclideanDistance(place1,place2,loader):
     return distance.euclidean(point1,point2)
 
 def validate(source,path,loader):
-    if len(path)<=2:
+
+    print("In validate\n")
+    print("Path\n" , path)
+    if len(path)<=1:
+        print("Less than 2");
         return 1
     place1 = source
-    place2=path[1]
-    place3=path[2]
+    place2=path[0]
+    place3=path[1]
     distance12=findEuclideanDistance(place1,place2,loader)
     distance13=findEuclideanDistance(place1,place3,loader)
     distance23=findEuclideanDistance(place2,place3,loader)
-    print("PLACE1=",place1,"PLACE2=",place2,"PLACE3=",place3,"DISTANCE12=",distance12,"DISTANCE13=",distance13,"DISTANCE23=",distance23)
+
     pathDeviation=math.degrees(math.acos((distance12**2+distance23**2-distance13**2)/(2*distance12*distance23)))
     print("PLACE1=",place1,"PLACE2=",place2,"PLACE3=",place3,"DISTANCE12=",distance12,"DISTANCE13=",distance13,"DISTANCE23=",distance23,"PATH_DEV=",pathDeviation,"\n")
     legal=1
     if pathDeviation<maxDeviation:
         legal=0
     else:
-        for i in range(3, len(path)):
+        for i in range(2, len(path)):
             legal=1
             place1=place2
             place2=place3
