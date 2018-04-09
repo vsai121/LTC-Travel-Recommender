@@ -12,10 +12,18 @@ with open('Loader/places.txt', 'r') as f:
 def loadDistances(place1, place2):
     distanceMatrix=[]
     with open('Loader/distances.txt') as results:
-        for result in (results.readlines()):
-            distanceMatrix.append([float(i) for i in result.split()])
+        for result in (results.readlines()):    
+            t=[]            
+            for i in result.split(' '):                    
+                if i!='\n':
+                    if i!='nan':
+                        x=float(i)
+                        t.append(x)
+                    else:
+                        t.append(19999)
+            distanceMatrix.append(t)
+            
     return distanceMatrix[places.index(place1)][places.index(place2)]
-
 def makeMap(path):
 	loader = mapLoader(100)
 	loader.loadPlaces()

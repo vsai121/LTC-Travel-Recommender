@@ -24,21 +24,6 @@ with open('places.txt', 'r') as f:
 			place = " ".join(place.split())
 			places.append(place)
 
-for place in places:
-	try:
-		result = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + place + ",India&key="+gpskey1)
-	except:
-		result = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + place + ",India&key="+gpskey2)		
-	result = result.content
-	print('\n\nGETTING COORDS\n\n\n')
-	results.append(result)
-
-
-with open('coordinates.txt', 'w') as outfile: 
-	for i in results:
-		json.dump(json.loads(i), outfile)
-		outfile.write('\n')
-
 with open('coordinates.txt') as results:  
 	for result in (results.readlines()):
 		if(len(json.loads(result)['results'])>=1):
@@ -50,14 +35,13 @@ with open('coordinates.txt') as results:
 def loadDistances(place1, place2):
 	failed=[]
 	try:
-		result = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1 + ',India&destinations=' + place2+',India&key='+key1)
+		result = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1 + ',India&destinations=' + place2+'Madhya Pradesh,India&key='+key1)
 		result = result.content.decode('utf-8')
 		print(result)
 	except:
-		result = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1+ ',India&destinations=' + place2+ ',India&key='+key2)
+		result = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + place1+ ',India&destinations=' + place2+ 'Madhya Pradesh,India&key='+key2)
 		result = result.content.decode('utf-8')
 		print(result)
-		
 	try:
 		distance = (json.loads(result)['rows'][0]['elements'][0]['distance']['text'])
 		distance=distance.split('km')[0]
@@ -65,10 +49,7 @@ def loadDistances(place1, place2):
 		distance = float(distance)
 		return distance
 	except Exception as e:
-		print(e)
 		failed.append([place1,place2])
-		print([place1,place2])
-	print(failed)
 	
 t = Delaunay(coordinates)
 nodes = list(range(len(coordinates)))
@@ -86,12 +67,13 @@ for edge in edges:
 	j = edge[1]
 	place1 = places[edge[0]]
 	place2 = places[edge[1]]
-	map[i, j] = loadDistances(place1, place2)
-	map[j, i] = map[i, j]
-	print(map[j,i])
-	Graph.add_edge(i,j, weight=map[i,j])
+	if "Bhopal" in place2:
+		map[i, j] = loadDistances(place1, place2)
+		map[j, i] = map[i, j]
+		print(map[j,i])
+		Graph.add_edge(i,j, weight=map[i,j])
 
-with open('distances.txt','w') as file:
+with open('distances2.txt','w') as file:
 	for i in map:
 		for j in i:
 			file.write(str(j))

@@ -32,6 +32,8 @@ start = input("Enter source:")
 start=loader.places.index(start+'\n')
 tovisit = input("Enter your desired destinations:").split()
 
+
+
 for i in range(len(tovisit)):
 	tovisit[i] = loader.places.index(tovisit[i]+"\n")
 allValid = []
