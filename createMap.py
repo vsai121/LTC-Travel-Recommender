@@ -5,9 +5,12 @@ import matplotlib.pyplot as plt
 places=[]
 
 with open('Loader/places.txt', 'r') as f:
-	reader = f.readlines()
-	for place in reader:
-		places.append(place)
+    i=0
+    reader = f.readlines()
+    for place in reader:
+        if place!='\n':
+            i+=1
+            places.append(place)
 
 def loadDistances(place1, place2):
     distanceMatrix=[]
@@ -22,7 +25,7 @@ def loadDistances(place1, place2):
                     else:
                         t.append(19999)
             distanceMatrix.append(t)
-            
+
     return distanceMatrix[places.index(place1)][places.index(place2)]
 def makeMap(path):
 	loader = mapLoader(100)

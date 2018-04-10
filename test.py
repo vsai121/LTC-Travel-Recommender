@@ -31,9 +31,6 @@ plt.show()
 start = input("Enter source:")
 start=loader.places.index(start+'\n')
 tovisit = input("Enter your desired destinations:").split()
-
-
-
 for i in range(len(tovisit)):
 	tovisit[i] = loader.places.index(tovisit[i]+"\n")
 allValid = []
@@ -77,12 +74,35 @@ for x in allPaths:
 			if finalPath not in lastRoutes:
 				lastRoutes.append(finalPath)
 
+bestPaths={}
 for lastRoute in lastRoutes:
 	currentRoute=(lastRoute)
 	#legal = validate(start,currentRoute , loader)
-	print("Final path is:",currentRoute," includes destinations:",[loader.places[x] for x in currentRoute if x in tovisit])
-
-	for i in range(len(tovisit)):
-		if tovisit[i] in currentRoute:
-			makeMap(currentRoute)
+	includedDestinations=[loader.places[x] for x in currentRoute if x in tovisit]
+	bestPaths["".join(includedDestinations)]=currentRoute
+	print("Final path is:",currentRoute," includes destinations:",includedDestinations)
 	print("*"*50)
+
+a=bestPaths
+remainingPlaces=tovisit
+bestPaths={}
+numberOfPlaces=lambda s:s.count("\n")
+sortedKeys=sorted(a,key=numberOfPlaces,reverse=True)
+for key in sortedKeys:
+	bestPaths[key]=a.get(key)
+print(bestPaths)
+
+for key in bestPaths:
+	placesVisited=key.split("\n")
+	placesRemoved=0
+	for place in placesVisited:
+		if place!='' and loader.places.index(place+'\n') in remainingPlaces:
+			remainingPlaces.remove(loader.places.index(place+"\n"))
+			placesRemoved+=1
+	if placesRemoved:
+		print(remainingPlaces)
+		currentRoute=bestPaths[key]
+		makeMap(currentRoute)
+	if len(remainingPlaces)==0:
+		break
+

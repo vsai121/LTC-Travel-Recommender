@@ -23,7 +23,6 @@ class mapLoader:
             reader = f.readlines()
             for place in reader:
                 if place!='\n':
-                    print(place,i)
                     i+=1
                     self.places.append(place)
 
