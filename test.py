@@ -29,6 +29,7 @@ nx.draw_networkx_edge_labels(loader.Graph,pos,edge_labels=labels)
 plt.show()
 
 start = input("Enter source:")
+startPoint=start
 start=loader.places.index(start+'\n')
 tovisit = input("Enter your desired destinations:").split()
 for i in range(len(tovisit)):
@@ -101,6 +102,7 @@ for key in bestPaths:
 			placesRemoved+=1
 	if placesRemoved:
 		print(remainingPlaces)
+		recommend(bestPaths,key,startPoint)
 		currentRoute=bestPaths[key]
 		makeMap(currentRoute)
 	if len(remainingPlaces)==0:
