@@ -37,15 +37,6 @@ for i in range(len(tovisit)):
 allValid = []
 allPaths = []
 
-"""
-recommendedVisits = [start]
-
-for x in tovisit:
-	recommendedVisits.append(x)
-
-recommendedVisits = recommend(recommendedVisits)
-
-"""
 
 for i in tovisit:
 	valid = validPlaces(start, i,tovisit,loader)
@@ -102,7 +93,6 @@ for key in bestPaths:
 			placesRemoved+=1
 	if placesRemoved:
 		print(remainingPlaces)
-		recommend(bestPaths,key,startPoint)
 		currentRoute=bestPaths[key]
 		makeMap(currentRoute)
 	if len(remainingPlaces)==0:
